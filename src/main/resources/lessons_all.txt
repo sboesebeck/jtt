@@ -1,0 +1,4 @@
+model3en;Text about model3 (English)
+model3de;Text über model3 (Deutsch)
+shakespeare_venice;William Shakespeare, The Merchant of Venice
+faust;j.W. v. Goethe, Faust

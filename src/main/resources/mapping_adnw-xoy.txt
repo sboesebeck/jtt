@@ -1,0 +1,9 @@
+a ctrl opt cmd - cmd opt ctrl
+b shift k q ä ü ö b p w m z shift
+B shift K Q Ä Ü Ö B P W M Z shift
+c caps h a e i u d t r n s f enter
+C caps H A E I U D T R N S F enter
+d tab x . o , y v g c l j ß + #
+D tab X : O ; Y V G C L J ? * '
+e < 1 2 3 4 5 6 7 8 9 0 - ´ backspace
+E > ! " § $ % & / ( ) = _ ` backspace

@@ -1,0 +1,3 @@
+l1;homerow (best use with dynamic lesson)
+l2;homerow + upper
+l3;homerow + lower
