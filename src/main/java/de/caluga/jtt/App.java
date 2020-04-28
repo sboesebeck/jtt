@@ -161,12 +161,14 @@ public class App {
             keys.addAll(Arrays.asList(keyboard.getRow("c")));
             keys.remove(0); //name of row
             keys.remove(0); //CAPS
-            keys.remove(keys.size()-1); //last key on homerow is enter
+            keys.remove(keys.size() - 1); //last key on homerow is enter
 
             linesOfExcercise.clear();
             generateLesson(keys);
             restart();
-
+        } else if (name.equals("free typing - no check")) {
+            linesOfExcercise.clear();
+            restart();
         } else if (name.equals( "all letters random chars + capitals")) {
             String chars=".,!?abcdefhijklmnopqrstuvwxyz";
             chars=chars+chars.toUpperCase();
@@ -267,7 +269,7 @@ public class App {
             List<String> words=new ArrayList<>();
             try {
                 while ((l = br.readLine()) != null) {
-                    words.add(l.toLowerCase());
+                    words.add(l);
                 }
                 br.close();
             } catch (IOException ex) {
@@ -552,35 +554,65 @@ public class App {
     }
 
     private void restart() {
-        currentLessonStats=null;
-        start = 0;
-        pauseTime=0;
-        errorsInCurrentLine = 0;
-        errors = 0;
-        typedText.setLength(0);
-        updateCurrentLine();
-        typed = 0;
-        typedWords = 0;
-        typedWordsLine = 0;
-        durationLabel.setText("0:00");
+        if (linesOfExcercise.size()==0){
+            currentLessonStats=null;
+            start = 0;
+            pauseTime=0;
+            errorsInCurrentLine = 0;
+            errors = 0;
+            typedText.setLength(0);
+            updateCurrentLine();
+            typed = 0;
+            typedWords = 0;
+            typedWordsLine = 0;
+            durationLabel.setText("0:00");
 //            readLesson(currentLayout, currentLesson);
-        errorsCountLabel.setText("Errors: 0");
-        speedWordLabel.setText("0 wpm");
-        charsCountLabel.setText("0");
-        speedCharLabel.setText("0 cpm");
-        lastAcuracyLine.setText("last: 0%");
-        currentAcuracyLine.setText("current: 0%");
-        acuracyPercent.setForeground(Color.black);
-        acuracyPercent.setText("0 %");
-        typedTextLabel.setText("");
-        currentLine=0;
+            errorsCountLabel.setText("Errors: none");
+            speedWordLabel.setText("0 wpm");
+            charsCountLabel.setText("0");
+            speedCharLabel.setText("0 cpm");
+            lastAcuracyLine.setText("last: -");
+            currentAcuracyLine.setText("current: -");
+            acuracyPercent.setForeground(Color.black);
+            acuracyPercent.setText("-");
+            typedTextLabel.setText("");
+            currentLine=0;
+            currentLineLabel.setText("");
+            nextLineLabel.setText("");
+            keyboard.resetStats();
+            progressBar.setMaximum(1);
+            progressBar.setValue(1);
+        } else {
+            currentLessonStats = null;
+            start = 0;
+            pauseTime = 0;
+            errorsInCurrentLine = 0;
+            errors = 0;
+            typedText.setLength(0);
+            updateCurrentLine();
+            typed = 0;
+            typedWords = 0;
+            typedWordsLine = 0;
+            durationLabel.setText("0:00");
+//            readLesson(currentLayout, currentLesson);
+            errorsCountLabel.setText("Errors: 0");
+            speedWordLabel.setText("0 wpm");
+            charsCountLabel.setText("0");
+            speedCharLabel.setText("0 cpm");
+            lastAcuracyLine.setText("last: 0%");
+            currentAcuracyLine.setText("current: 0%");
+            acuracyPercent.setForeground(Color.black);
+            acuracyPercent.setText("0 %");
+            typedTextLabel.setText("");
+            currentLine = 0;
 
-        currentLineToType=linesOfExcercise.get(0);
-        currentLineLabel.setText(currentLineToType);
-        nextLineLabel.setText(linesOfExcercise.get(1));
-        keyboard.resetStats();
-        progressBar.setMaximum(linesOfExcercise.size());
-        progressBar.setValue(0);
+            currentLineToType = linesOfExcercise.get(0);
+            currentLineLabel.setText(currentLineToType);
+            nextLineLabel.setText(linesOfExcercise.get(1));
+            keyboard.resetStats();
+            progressBar.setMaximum(linesOfExcercise.size());
+            progressBar.setValue(0);
+        }
     }
 
     private void generateLesson(List<String> keys) {
@@ -623,6 +655,8 @@ public class App {
 
     private void updateLessons() {
         lessonCBX.removeAllItems();
+        lessonCBX.addItem("free typing - no check");
+        lessonCBX.addItem("-----------------");
         lessonCBX.addItem(currentLayout + " homerow random");
         lessonCBX.addItem(currentLayout + " homerow+up random");
         lessonCBX.addItem("all letters random chars");
@@ -677,6 +711,14 @@ public class App {
     }
 
     private void keyTyped(KeyEvent e) {
+        if (linesOfExcercise.size()==0){
+            typedText.append(e.getKeyChar());
+            currentLineLabel.setText(typedText.toString());
+            typedTextLabel.setText(typedText.toString());
+            typed++;
+            typedInCurrentLine++;
+            return;
+        }
         TypedKey tk=new TypedKey();
         tk.setCorrect(true);
         tk.setCharacter(""+e.getKeyChar());
@@ -754,6 +796,9 @@ public class App {
     }
 
     private void updateCurrentLine() {
+        if (linesOfExcercise.size()==0){
+            return;
+        }
         StringBuilder label = new StringBuilder("<html><body>");
         for (int i = 0; i < typedText.length() && i < currentLineToType.length(); i++) {
             String color = "red";
@@ -815,7 +860,11 @@ public class App {
         typedWordsLine=0;
 //        speedWordLabel.setText(speedWpm + "wpm");
         log.info("handle enter");
-
+        if (linesOfExcercise.size()==0){
+            typedText.setLength(0);
+            typedTextLabel.setText("");
+            return;
+        }
         if (typedText.length() < currentLineToType.length()) {
             errors += currentLineToType.length() - typedText.length();
             errorsCountLabel.setText("Errors: " + errors);
